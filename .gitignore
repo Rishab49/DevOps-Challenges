@@ -1,0 +1,4 @@
+.terraform
+pat.txt
+terraform*
+.terraform*
