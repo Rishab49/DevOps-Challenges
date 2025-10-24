@@ -70,6 +70,9 @@ fi
 ```
 
 
+First we have logged into git using below command which uses Personal Access Token as password 
+`cat pat.txt | docker login -u rajrishab --password-stdin`
+
 In the above script we are trying to get the latest version of our docker image using the below command 
 
 `curl -L --fail "https://hub.docker.com/v2/repositories/<USERNAME>/<IMAGE_NAME>/tags/?page_size=1000" |     jq '.results | .[] | .name' -r |     sed 's/latest//' |      sort --version-sort |   tail -n 1`
