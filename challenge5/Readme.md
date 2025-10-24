@@ -31,7 +31,7 @@ This challenges your ability to think sequentially and use scripting for automat
 
 We have our Dockerfile image and terraform configuration ready from previous challenges and in this challenge we have to create a shell script through which can build a new image with dynamic version number and also check whether it is working fine or not.
 
-### CI Scirpt
+### CI Script
 So we will start by creating a script called `ci.sh`, inside which we will have below mentioned content
 ```bash
 
@@ -145,6 +145,6 @@ after that ASG will terminate the old instances and create the new instances and
 ## Conclusion
 We have create a shell script which will automatically create a new image and push it to DockerHub and also we have prepared the necessary commands which we can use to update our EC2 instance whenever we make changes to our docker images.
 
-You can find the config and scripts in the repo.
+You can find the config and scripts in the [repo](https://github.com/Rishab49/DevOps-Challenges)
 
 ![alt text](image.png)
