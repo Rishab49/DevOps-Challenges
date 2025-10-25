@@ -15,6 +15,12 @@ provider "aws"{
 
 
 
+variable "image_tag" {
+  type = string
+  default = "rajrishab/challenge2:1.0"
+}
+
+
 data "aws_ssm_parameter" "latest_al2023_ami" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
 }
@@ -164,7 +170,9 @@ resource "aws_launch_template" "launch_template"{
   }
   update_default_version = true
 
-  user_data = filebase64("${path.module}/userdata.sh")
+  user_data = base64encode(templatefile("${path.module}/userdata.tftpl",{
+    image_tag = var.image_tag
+  }))
 }
 
 resource "aws_autoscaling_group" "ASG1" {

@@ -108,7 +108,7 @@ docker run -dit --name temp -p 80:80 $new_tag
 # curl -I -w "%{http_code}\n" http://localhost
 if [ $(curl -o /dev/null -s -w "%{http_code}\n" http://localhost) -eq 200 ]; then
     if [ $(curl -o /dev/null -s -w "%{http_code}\n" http://localhost/health/) -eq 200 ]; then
-        # docker push $new_tag
+        docker push $new_tag
         echo "endpoints are working fine"
     else
         echo "endpoint /health/ are not working fine"
@@ -121,6 +121,8 @@ fi
 
 
 ### CD Process
+
+#### 1. First approach
 In order to update the EC2 instances with our latest image we need to update the launch template which we have created in terraform config
 
 for that we have to update the userdata which are passing to launch template with the latest image tag as shown below 
@@ -141,6 +143,67 @@ one thing to note here is that your launch template in terraform config should h
 
 after that ASG will terminate the old instances and create the new instances and automatically add it to target group so that we can access it through ALB.
 
+
+#### 2. Second approach
+In order to automate the CD process to update the comming soon page we need to add the folllowing:
+
+First of all change our userdata.sh which is a static file to template file(userdata.tftpl) like mentioned below 
+
+
+
+```bash
+#!/bin/bash
+sudo dnf update -y
+sudo dnf install -y docker
+sudo usermod -aG docker ec2-user
+sudo systemctl start docker
+sudo docker run -p 80:80 --name tempo ${image_tag}
+echo "running"
+```
+
+After that we need to update our shell script and add the below mentioned command inside the nested if statement, this command executes the `terraform apply -var="image_tag=$new_tag" -auto-approve` command which does not ask for `yes` and also passes the latest images tag which we have created so that terraform will detect the change and automatically update the launch template and apply the changes to terraform and refresh the template
+
+```bash
+    docker push $new_tag
+    echo "endpoints are working fine"
+    cd /home/raj/Documents/DevOps-Challenges/challenge5
+    terraform init
+    terraform plan
+    terraform apply -var="image_tag=$new_tag" -auto-approve
+    aws autoscaling start-instance-refresh --auto-scaling-group-name ASG1 --strategy Rolling --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' --region us-east-2
+
+```
+
+
+and update our terraform config by adding a variable block and updating the launch_template block as following
+
+```bash
+
+
+variable "image_tag" {
+  type = string
+  default = "rajrishab/challenge2:1.0"
+}
+
+
+
+resource "aws_launch_template" "launch_template"{
+  name = "launch_template"
+  image_id = data.aws_ssm_parameter.latest_al2023_ami.value
+  instance_type = "t2.micro"
+
+  network_interfaces{
+    associate_public_ip_address = true
+    security_groups = [aws_security_group.SG1.id]
+  }
+  update_default_version = true
+
+  user_data = filebase64(templatefile("${path.module}/userdata.tftpl",{
+    image_tag = var.image_tag
+  }))
+}
+
+```
 
 ## Conclusion
 We have create a shell script which will automatically create a new image and push it to DockerHub and also we have prepared the necessary commands which we can use to update our EC2 instance whenever we make changes to our docker images.

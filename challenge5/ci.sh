@@ -1,6 +1,6 @@
 #!/bin/bash
 cat pat.txt | docker login -u <USERNAME> --password-stdin
-cd /home/raj/Documents/terraform/challenge5/docker
+cd /home/raj/Documents/DevOps-Challenges/challenge5/docker
 version=$(curl -L --fail "https://hub.docker.com/v2/repositories/rajrishab/challenge2/tags/?page_size=1000" |     jq '.results | .[] | .name' -r |     sed 's/latest//' |      sort --version-sort |   tail -n 1)
 major_version=$(echo "$version" | awk -F '.' '{print $1}')
 minor_version=$(echo "$version" | awk -F '.' '{print $2 + 1}')
@@ -20,12 +20,16 @@ docker run -dit --name temp -p 80:80 $new_tag
 # curl -I -w "%{http_code}\n" http://localhost
 if [ $(curl -o /dev/null -s -w "%{http_code}\n" http://localhost) -eq 200 ]; then
     if [ $(curl -o /dev/null -s -w "%{http_code}\n" http://localhost/health/) -eq 200 ]; then
-        # docker push $new_tag
+        docker push $new_tag
         echo "endpoints are working fine"
+        cd /home/raj/Documents/DevOps-Challenges/challenge5
+        terraform init
+        terraform plan
+        terraform apply -var="image_tag=$new_tag" -auto-approve
+        aws autoscaling start-instance-refresh --auto-scaling-group-name ASG1 --strategy Rolling --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' --region us-east-2
     else
         echo "endpoint /health/ are not working fine"
     fi
 else
 echo "endpoint / are not working fine"
 fi
-
