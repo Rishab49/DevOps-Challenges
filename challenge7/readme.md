@@ -107,3 +107,29 @@ you will see output like following
 
 
 Here as the load of the cluster exceed 50% mark HPA increase the number of replica in the deployment config which in turn to maintain the desired state of cluster also increase the number of pods according to its config.
+
+
+
+
+
+## Basic obervability Hook
+
+To integrate the prometheus monitoring stack with our running application we can create a ServiceMonitor which will listen on an endpoint on regulat intervals and we need to provide the service monitor with a matchLabel with app value as the label of our service. Also for the service monitor to get discovered by the by prometheus we need to add a label with release key and `kube-prometheus-stack` as value.
+
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spacelift-prometheus-servicemonitor
+  labels:
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+    - port: http
+      path: /prometheus
+      interval: 15s
+  selector:
+    matchLabels:
+      app: spacelift-prometheus-demo
+```
