@@ -16,6 +16,8 @@ jobs:
         id: get-tag
         run: echo "id=$(echo ${{github.sha}} | cut -c 1-7)" >> "$GITHUB_OUTPUT" |
              echo "tag=$id"
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
