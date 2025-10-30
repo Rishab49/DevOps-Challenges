@@ -25,3 +25,13 @@ jobs:
           context: ./challenge8/docker
           file: ./challenge8/docker/Dockerfile
           tags: ${{ vars.DOCKER_USERNAME}}/${{ vars.IMAGE_NAME }}:${{ steps.get-tag.outputs.id }}
+    deploy:
+      runs-on: kub-runner 
+      needs: build
+      steps: 
+        - name: checkout
+          uses: actions/checkout@v4
+        - name: updating config
+          run: sed -i 's|image:.*|image: ${{ needs.build.outputs.id }}|' ./challenge9/kubernetes/deployment.yaml
+        - name: Deploy the app to kubernetes
+          run: kubectl apply -f https://github.com/Rishab49/DevOps-Challenges/main/challenge9/kubernetes/deployment.yaml
