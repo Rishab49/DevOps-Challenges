@@ -15,6 +15,7 @@ jobs:
       - name: Get tag
         id: get-tag
         run: id=$(echo ${{github.sha}} | cut -c 1-7)
+             echo "tag=$id"
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
