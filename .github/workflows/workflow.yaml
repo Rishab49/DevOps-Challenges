@@ -22,4 +22,4 @@ jobs:
           push: true
           context: ./challenge8/docker
           file: ./challenge8/docker/Dockerfile
-          tags: ${{ vars.DOCKER_USERNAME}}/${{ vars.IMAGE_NAME }}:${{steps.get-tag.outputs.id}}
+          tags: ${{ vars.DOCKER_USERNAME}}/${{ vars.IMAGE_NAME }}:${{ steps.get-tag.outputs.id }}
