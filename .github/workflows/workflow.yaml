@@ -40,4 +40,4 @@ jobs:
           IMAGE_TAG="${{ needs.build.outputs.id }}" | 
           sed -i "s|image:.*|image: ${IMAGE_TAG}|" ./challenge9/kubernetes/deployment.yaml
       - name: Deploy the app to kubernetes
-        run: kubectl apply -f https://github.com/Rishab49/DevOps-Challenges/blob/main/challenge9/kubernetes/deployment.yaml
+        run: kubectl apply -f ./challenge9/kubernetes/deployment.yaml
