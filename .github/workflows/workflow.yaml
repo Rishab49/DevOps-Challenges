@@ -32,6 +32,8 @@ jobs:
         - name: checkout
           uses: actions/checkout@v4
         - name: updating config
-          run: sed -i 's|image:.*|image: ${{ needs.build.outputs.id }}|' ./challenge9/kubernetes/deployment.yaml
+          run: |
+          IMAGE_TAG="${{ needs.build.outputs.id }}"
+          sed -i "s|image:.*|image: ${IMAGE_TAG}|" ./challenge9/kubernetes/deployment.yaml
         - name: Deploy the app to kubernetes
           run: kubectl apply -f https://github.com/Rishab49/DevOps-Challenges/main/challenge9/kubernetes/deployment.yaml
