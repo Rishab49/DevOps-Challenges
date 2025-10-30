@@ -19,6 +19,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: ./docker
-          file: ./docker/Dockerfile
+          context: ./challenge8/docker
+          file: ./challenge8/docker/Dockerfile
           tags: ${{ vars.DOCKER_USERNAME}}/${{ vars.IMAGE_NAME }}:${{steps.get-tag.outputs.id}}
