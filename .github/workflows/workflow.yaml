@@ -14,7 +14,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Get tag
         id: get-tag
-        run: id=$(echo ${{github.sha}} | cut -c 1-7) >> "$GITHUB_OUTPUT"
+        run: id=$(echo ${{github.sha}} | cut -c 1-7) >> "$GITHUB_OUTPUT" |
              echo "tag=$id"
       - name: Build and push
         uses: docker/build-push-action@v6
