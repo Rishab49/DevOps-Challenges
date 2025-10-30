@@ -1,0 +1,24 @@
+name: Building Docker image and pushing to DockerHub
+run-name: ${{ github.actor }} is Building and pushing an image
+on:
+  push:
+    branches: ['main']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: DockerHub login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Get tag
+        id: get-tag
+        run: id=$(echo ${{github.sha}} | cut -c 1-7)
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: ./docker
+          file: ./docker/Dockerfile
+          tags: ${{ vars.DOCKER_USERNAME}}/${{ vars.IMAGE_NAME }}:${{steps.get-tag.outputs.id}}
