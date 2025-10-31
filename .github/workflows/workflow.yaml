@@ -40,4 +40,10 @@ jobs:
           IMAGE_TAG="${{ needs.build.outputs.id }}" | 
           sed -i "s|image:.*|image: ${IMAGE_TAG}|" ./challenge9/kubernetes/deployment.yaml
       - name: Deploy the app to kubernetes
-        run: kubectl apply -f ./challenge9/kubernetes/deployment.yaml
+        run: |
+             kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --insecure-skip-tls-verify=true
+             kubectl config set-credentials my-remote-access-user --token="${{ secrets.TOKEN }}"
+             kubectl config set-context my-remote-access-context --cluster=minikube  --user=my-remote-access-user --namespace=default
+             kubectl config use-context my-remote-access-context
+             kubectl get pods --all-namespaces
+             kubectl apply -f ./challenge9/kubernetes/deployment.yaml
