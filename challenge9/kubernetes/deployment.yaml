@@ -55,24 +55,5 @@ spec:
       port: 80
       targetPort: 80 
       nodePort: 30080
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: my-app-deployment 
-  minReplicas: 3
-  maxReplicas: 9
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 50
 
 
