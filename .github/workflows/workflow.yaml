@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get-tag.outputs.id }}
     steps:
       - name: DockerHub login
         uses: docker/login-action@v3
@@ -37,7 +39,7 @@ jobs:
         run: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
       - name: updating config
         run: |
-          IMAGE_TAG="${{ steps.build.outputs.id }}" | 
+          IMAGE_TAG="${{ needs.build.outputs.tag }}" | 
           sed -i "s|image:.*|image: ${IMAGE_TAG}|" ./challenge9/kubernetes/deployment.yaml
       - name: Deploy the app to kubernetes
         run: |
@@ -47,5 +49,5 @@ jobs:
              kubectl config use-context my-remote-access-context
              kubectl get pods --all-namespaces
              kubectl config view
-             echo "the value of TAG is ${{ steps.build.outputs.id }}"
+             echo "the value of TAG is ${{ needs.build.outputs.tag }}"
              kubectl apply -f ./challenge9/kubernetes/deployment.yaml
