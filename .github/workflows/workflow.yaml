@@ -47,4 +47,5 @@ jobs:
              kubectl config use-context my-remote-access-context
              kubectl get pods --all-namespaces
              kubectl config view
+             echo "the value of TAG is ${{ IMAGE_TAG }}"
              kubectl apply -f ./challenge9/kubernetes/deployment.yaml
