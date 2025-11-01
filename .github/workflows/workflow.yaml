@@ -24,8 +24,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: ./challenge8/docker
-          file: ./challenge8/docker/Dockerfile
+          context: ./challenge9/docker
+          file: ./challenge9/docker/Dockerfile
           tags: ${{ vars.DOCKER_USERNAME}}/${{ vars.IMAGE_NAME }}:${{ steps.get-tag.outputs.id }}
   deploy:
     runs-on: kub-runner 
