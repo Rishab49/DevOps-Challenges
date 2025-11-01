@@ -39,7 +39,7 @@ jobs:
         run: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
       - name: updating config
         run: |
-          IMAGE_TAG="${{ needs.build.outputs.tag }}" | 
+          IMAGE_TAG="${{ needs.build.outputs.tag }}"
           sed -i "s|image:.*|image: ${IMAGE_TAG}|" ./challenge9/kubernetes/deployment.yaml
       - name: Deploy the app to kubernetes
         run: |
