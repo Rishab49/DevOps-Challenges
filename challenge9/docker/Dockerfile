@@ -1,5 +1,5 @@
 FROM httpd:2.4
-RUN echo "<h1> It is working on $(hostname)" > /usr/local/apache2/htdocs/index.html
+COPY ./index.html  /usr/local/apache2/htdocs/
 WORKDIR /usr/local/apache2/htdocs/health
 COPY /health .
 WORKDIR /usr/local/apache2/conf
