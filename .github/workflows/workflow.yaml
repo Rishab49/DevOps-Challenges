@@ -3,9 +3,9 @@ run-name: ${{ github.actor }} is Building and pushing an image
 on:
   push:
     branches: ['main']
-  path-ignore:
-    - 'Readme.md'
-    - '**/readme.md'
+    paths-ignore:
+      - 'Readme.md'
+      - '**/readme.md'
 jobs:
   build:
     runs-on: ubuntu-latest
